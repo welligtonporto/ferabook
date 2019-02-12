@@ -1,0 +1,23 @@
+.shoppingCart {
+  &__tableCellPrimary {
+    display: flex;
+    align-items: center;
+    padding: 10px 0;
+
+    img {
+      width: auto;
+      height: 100px;
+      margin-right: 10px;
+    }
+  }
+
+  &__actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 40px;
+  }
+
+  &__gettingOrder {
+    margin-left: 10px;
+  }
+}

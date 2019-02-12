@@ -88,6 +88,8 @@ class ShoppingCart extends Component {
       this.setState({
         gettingOrder: false
       });
+
+      this.props.history.push('/order-completed');
     }, 2000);
   }
 

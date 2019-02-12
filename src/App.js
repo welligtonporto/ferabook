@@ -3,6 +3,7 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import Home from './components/home/Home';
 import ShoppingCart from './components/shopping_cart/ShoppingCart';
 import DefaultLayout from './components/default_layout/DefaultLayout';
+import OrderCompleted from './components/order_completed/OrderCompleted';
 
 class App extends Component {
   render() {
@@ -15,6 +16,7 @@ class App extends Component {
 
           <DefaultLayout exact path="/" component={Home} />
           <DefaultLayout path="/cart" component={ShoppingCart}/>
+          <DefaultLayout path="/order-completed" component={OrderCompleted}/>
         </React.Fragment>
       </Router>
     );

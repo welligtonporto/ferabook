@@ -24,7 +24,7 @@ class DefaultLayoutHeader extends Component {
     anchorEl: null,
   };
 
-  componentDidMount = () => {
+  componentDidMount() {
     this.setProductsOnCart();
   }
 

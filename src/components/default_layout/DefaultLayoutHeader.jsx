@@ -29,10 +29,10 @@ class DefaultLayoutHeader extends Component {
   }
 
   setProductsOnCart = () => {
-    let productsOnCart = JSON.parse(localStorage.getItem('productsOnCart')) || {};
+    let productsOnCart = JSON.parse(localStorage.getItem('productsOnCart')) || [];
 
     if (Object.keys(productsOnCart).length){
-      let quantityOnCart = Object.keys(productsOnCart).reduce((sum, key) => sum + productsOnCart[key], 0);
+      let quantityOnCart = Object.keys(productsOnCart).reduce((sum, key) => sum + productsOnCart[key].total, 0);
       this.props.addProductOnCart(quantityOnCart);
     }
   }

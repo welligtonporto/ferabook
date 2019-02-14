@@ -13,13 +13,18 @@ import Button from '@material-ui/core/Button';
 import './ProductItem.scss';
 
 class ProductItem extends Component {
-  addToCart = (idProduct) => {
-    let oldProductsOnCart = JSON.parse(localStorage.getItem('productsOnCart')) || {};
+  addToCart = (productData) => {
+    let oldProductsOnCart = JSON.parse(localStorage.getItem('productsOnCart')) || [];
+    let productAlreadyAdded = oldProductsOnCart.find(item => item.id === productData.id);
 
-    if (idProduct in oldProductsOnCart){
-      oldProductsOnCart[idProduct]++;
+    if (productAlreadyAdded) {
+      let indexProduct = oldProductsOnCart.indexOf(productAlreadyAdded);
+      oldProductsOnCart[indexProduct].total++;
     } else {
-      oldProductsOnCart[idProduct] = 1
+      oldProductsOnCart.push({
+        ...productData,
+        total: 1
+      });
     }
 
     localStorage.setItem('productsOnCart', JSON.stringify(oldProductsOnCart));
@@ -44,7 +49,7 @@ class ProductItem extends Component {
         </CardContent>
 
         <CardActions className="productItem__actions">
-          <Button variant="contained" size="medium" color="secondary" fullWidth onClick={this.addToCart.bind(this, productData.id)}>
+          <Button variant="contained" size="medium" color="secondary" fullWidth onClick={this.addToCart.bind(this, productData)}>
             Add to cart
           </Button>
         </CardActions>

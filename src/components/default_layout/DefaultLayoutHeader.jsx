@@ -1,4 +1,8 @@
 import React, { Component } from 'react';
+import { bindActionCreators } from "redux";
+import { connect } from "react-redux";
+
+import { addProductOnCart } from "./../product_item/_actionsReducers";
 
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -19,6 +23,19 @@ class DefaultLayoutHeader extends Component {
     auth: true,
     anchorEl: null,
   };
+
+  componentDidMount = () => {
+    this.setProductsOnCart();
+  }
+
+  setProductsOnCart = () => {
+    let productsOnCart = JSON.parse(localStorage.getItem('productsOnCart')) || {};
+
+    if (Object.keys(productsOnCart).length){
+      let quantityOnCart = Object.keys(productsOnCart).reduce((sum, key) => sum + productsOnCart[key], 0);
+      this.props.addProductOnCart(quantityOnCart);
+    }
+  }
 
   handleMenu = event => {
     this.setState({ anchorEl: event.currentTarget });
@@ -83,7 +100,7 @@ class DefaultLayoutHeader extends Component {
           )}
 
           <IconButton color="inherit" onClick={() => this.props.history.push('/cart')}>
-            <Badge badgeContent={13} color="secondary">
+            <Badge badgeContent={this.props.productsOnCart} color="secondary">
               <ShoppingCartIcon />
             </Badge>
           </IconButton>
@@ -93,5 +110,19 @@ class DefaultLayoutHeader extends Component {
   }
 }
 
-export default DefaultLayoutHeader;
+const mapStateToProps = state => ({
+  productsOnCart: state.productsOnCart
+});
 
+const mapDispatchToProps = dispatch =>
+  bindActionCreators(
+    {
+      addProductOnCart
+    },
+    dispatch
+  );
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(DefaultLayoutHeader);

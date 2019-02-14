@@ -35,8 +35,10 @@ class DefaultLayoutHeader extends Component {
     return (
       <AppBar position="fixed">
         <Toolbar>
-          <Typography variant="h6" color="inherit" noWrap className="logo" onClick={() => this.props.history.push('/')}>
-            #ferabook
+          <Typography variant="h6" color="inherit" noWrap className="logo">
+            <span onClick={() => this.props.history.push('/')}>
+              #ferabook
+            </span>
           </Typography>
 
           {auth && (

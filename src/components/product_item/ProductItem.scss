@@ -1,7 +1,15 @@
 .productItem {
+  // position: relative;
+
   &__img {
     display: block;
-    max-height: 250px;
+    height: 150px;
     margin: 0 auto;
+  }
+
+  &__actions {
+    // position: absolute;
+    // bottom: 0;
+    // width: 100%;
   }
 }

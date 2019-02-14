@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
@@ -8,27 +8,32 @@ import Button from '@material-ui/core/Button';
 
 import './ProductItem.scss';
 
-const ProductItem = ({ data: productData }) => {
-  return (
-    <Card>
-      <img className="productItem__img" src={productData.image_url} alt={productData.title} />
+class ProductItem extends Component {
+  render() {
+    const defaultPrice = '10.00';
+    const productData = this.props.data;
 
-      <CardContent>
-        <Typography gutterBottom variant="h5" component="h2">
-          {productData.title}
-        </Typography>
-        <Typography component="p">
-          {productData.price}
-        </Typography>
-      </CardContent>
+    return (
+      <Card className="productItem">
+        <img className="productItem__img" src={productData.volumeInfo.imageLinks.thumbnail} alt={productData.volumeInfo.title} />
 
-      <CardActions>
-        <Button variant="contained" size="medium" color="secondary" fullWidth>
-          Add to cart
-        </Button>
-      </CardActions>
-    </Card>
-  )
+        <CardContent>
+          <Typography gutterBottom variant="h5" component="h2">
+            {productData.volumeInfo.title}
+          </Typography>
+          <Typography component="p">
+            {productData.saleInfo ? productData.saleInfo.listPrice.amount : defaultPrice}
+          </Typography>
+        </CardContent>
+
+        <CardActions className="productItem__actions">
+          <Button variant="contained" size="medium" color="secondary" fullWidth>
+            Add to cart
+          </Button>
+        </CardActions>
+      </Card>
+    )
+  }
 };
 
 export default ProductItem;

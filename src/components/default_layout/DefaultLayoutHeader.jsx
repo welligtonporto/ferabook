@@ -3,6 +3,7 @@ import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 
 import { setCountProductsOnCart } from "./../product_item/_actionsReducers";
+import { showCheckin } from "./../checkin/_actionsReducers";
 
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -20,7 +21,7 @@ import './DefaultLayoutHeader.scss';
 
 class DefaultLayoutHeader extends Component {
   state = {
-    auth: true,
+    auth: false,
     anchorEl: null,
   };
 
@@ -92,7 +93,7 @@ class DefaultLayoutHeader extends Component {
           )}
 
           {!auth && (
-            <Button color="inherit" onClick={() => console.log('open modal')}>
+            <Button color="inherit" onClick={this.props.showCheckin.bind(this)}>
               <PersonIcon className="personIcon" />
               <Typography color="inherit">
                 Login/Signup
@@ -118,7 +119,8 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
-      setCountProductsOnCart
+      setCountProductsOnCart,
+      showCheckin
     },
     dispatch
   );

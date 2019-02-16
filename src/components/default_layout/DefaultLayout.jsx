@@ -1,5 +1,8 @@
 import React from 'react';
 import { Route } from 'react-router-dom';
+import { connect } from "react-redux";
+
+import Checkin from './../checkin/Checkin'
 
 import DefaultLayoutHeader from './DefaultLayoutHeader'
 
@@ -14,10 +17,20 @@ const DefaultLayout = ({component: Component, ...rest}) => {
         <div className="defaultLayout__content">
           <Component {...matchProps} />
         </div>
+        
+        {rest.checkinIsVisible && (
+          <Checkin />
+        )}
       </div>  
     )} />
   )
 };
 
+const mapStateToProps = state => ({
+  checkinIsVisible: state.checkinIsVisible
+});
 
-export default DefaultLayout;
+export default connect(
+  mapStateToProps,
+  null
+)(DefaultLayout);

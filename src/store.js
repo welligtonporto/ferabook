@@ -1,9 +1,9 @@
 import { createStore, combineReducers } from "redux";
 
-import productsOnCart from "./components/product_item/_reducers";
+import countProductsOnCart from "./components/product_item/_reducers";
 
 const reducers = combineReducers({
-  productsOnCart
+  countProductsOnCart
 });
 
 const store = createStore(reducers);

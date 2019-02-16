@@ -1,9 +1,14 @@
 import React, { Component } from 'react';
+import { bindActionCreators } from "redux";
+import { connect } from "react-redux";
+
+import { setCountProductsOnCart } from "./../product_item/_actionsReducers";
 
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import Paper from '@material-ui/core/Paper';
 import Table from '@material-ui/core/Table';
+import TableHead from '@material-ui/core/TableHead';
 import TableBody from '@material-ui/core/TableBody';
 import TableRow from '@material-ui/core/TableRow';
 import TableCell from '@material-ui/core/TableCell';
@@ -22,7 +27,10 @@ class ShoppingCart extends Component {
     gettingOrder: false,
     isLoading: true,
     productsOnCart: [],
-    totalPrice: null
+    totalPrices: {
+      cart: null,
+      items: []
+    }
   };
 
   componentDidMount() {
@@ -30,52 +38,35 @@ class ShoppingCart extends Component {
   };
 
   getProductsOnCart = () => {
-    // TODO: Mudar para API
-    this.setState({
-      isLoading: false,
-      productsOnCart: [
-        {
-          'id': 'a0001',
-          'image_url': 'https://m.media-amazon.com/images/I/51d1qVhmAmL._AC_UL436_.jpg',
-          'title': 'Product title',
-          'price': '9,99'
-        },
-        {
-          'id': 'a0002',
-          'image_url': 'https://m.media-amazon.com/images/I/51J+Z3wDJkL._AC_UL436_.jpg',
-          'title': 'Product title #1',
-          'price': '1,11'
-        }
-      ],
-      totalPrice: this.calcTotalPrice([
-        {
-          'id': 'a0001',
-          'image_url': 'https://m.media-amazon.com/images/I/51d1qVhmAmL._AC_UL436_.jpg',
-          'title': 'Product title',
-          'price': '3.2'
-        },
-        {
-          'id': 'a0002',
-          'image_url': 'https://m.media-amazon.com/images/I/51J+Z3wDJkL._AC_UL436_.jpg',
-          'title': 'Product title #1',
-          'price': '2.2'
-        },
-        {
-          'id': 'a0002',
-          'image_url': 'https://m.media-amazon.com/images/I/51J+Z3wDJkL._AC_UL436_.jpg',
-          'title': 'Product title #1',
-          'price': '1.2'
-        }
-      ])
-    });
+    let productsOnCart = JSON.parse(localStorage.getItem('productsOnCart')) || [];
+
+    if (Object.keys(productsOnCart).length){
+      this.setState({
+        isLoading: false,
+        productsOnCart,
+        totalPrices: this.getTotalPrices(productsOnCart)
+      });
+    } else {
+      this.setState({
+        isLoading: false,
+        productsOnCart: []
+      });
+    }
   };
 
-  calcTotalPrice = (productsOnCart) => {
-    let totalPrice = 0;
+  getTotalPrices = (productsOnCart) => {
+    const defaultPrice = '10.00';
 
-    productsOnCart.map(product => totalPrice = parseFloat(totalPrice) + parseFloat(product.price));
+    let totalPricesByItem = productsOnCart.map(product => (
+      (product.saleInfo ? product.saleInfo.listPrice.amount : defaultPrice) * product.qty).toFixed(2)
+    );
 
-    return totalPrice.toFixed(2);
+    let totalPricesCart = totalPricesByItem.reduce((sum, totalItem) => parseFloat(sum) + parseFloat(totalItem), 0);
+
+    return {
+      items: totalPricesByItem,
+      cart: totalPricesCart
+    }
   };
 
   getOrder = () => {
@@ -93,8 +84,23 @@ class ShoppingCart extends Component {
     }, 2000);
   }
 
+  removeProductFromCart = (indexProduct) => {
+    let productsOnCart = JSON.parse(localStorage.getItem('productsOnCart')) || [];
+    productsOnCart.splice(indexProduct, 1);
+    localStorage.setItem('productsOnCart', JSON.stringify(productsOnCart));
+  
+    this.getProductsOnCart();
+    this.refreshCountItemsOnCart(productsOnCart);
+  };
+  
+  refreshCountItemsOnCart = productsOnCart => {
+    let newCountItemsOnCart = productsOnCart.reduce((sum, product) => sum + product.qty, 0);
+    this.props.setCountProductsOnCart(newCountItemsOnCart);
+  };
+
   render() {
-    let { gettingOrder, isLoading, productsOnCart } = this.state;
+    let { gettingOrder, isLoading, productsOnCart, totalPrices } = this.state;
+    const defaultPrice = '10.00';
 
     return (
       <div>
@@ -120,27 +126,40 @@ class ShoppingCart extends Component {
               </React.Fragment>
             )}
 
-            {productsOnCart.length && (
+            {productsOnCart.length > 0 && (
               <React.Fragment>
                 <Paper>
                   <Table>
+                    <TableHead>
+                        <TableRow>
+                          <TableCell>Product</TableCell>
+                          <TableCell align="center">Qty.</TableCell>
+                          <TableCell align="center">@</TableCell>
+                          <TableCell align="center">Price</TableCell>
+                          <TableCell />
+                        </TableRow>
+                      </TableHead>
                     <TableBody>
-                      {productsOnCart.map(product => (
+                      {productsOnCart.map((product, index) => (
                         <TableRow key={product.id}>
                           <TableCell>
                             <div className="shoppingCart__tableCellPrimary">
-                              <img width="70" src={product.image_url} alt={product.title} />
+                              <img width="70" src={product.volumeInfo.imageLinks.thumbnail} alt={product.title} />
 
                               <strong>
-                                {product.title}
+                                {product.volumeInfo.title}
                               </strong>
                             </div>
                           </TableCell>
 
-                          <TableCell align="center">{product.price}</TableCell>
+                          <TableCell align="center">{product.qty}</TableCell>
+
+                          <TableCell align="center">{`$ ${product.saleInfo ? product.saleInfo.listPrice.amount : defaultPrice}`}</TableCell>
+
+                          <TableCell align="center">{`$ ${totalPrices.items[index]}`}</TableCell>
 
                           <TableCell align="center">
-                            <IconButton fontSize="large" onClick={() => console.log('remove to cart')}>
+                            <IconButton fontSize="large" onClick={this.removeProductFromCart.bind(this, index)}>
                               <DeleteIcon  color="inherit"  variant="raised" />
                             </IconButton>
                           </TableCell>
@@ -148,7 +167,9 @@ class ShoppingCart extends Component {
                       ))}
 
                       <TableRow>
-                        <TableCell align="right">
+                        <TableCell colSpan={2} />
+
+                        <TableCell align="center">
                           <strong>
                             Total:
                           </strong>
@@ -156,11 +177,11 @@ class ShoppingCart extends Component {
 
                         <TableCell align="center">
                           <Typography color="secondary">
-                            {`$ ${this.state.totalPrice}`}
+                            {`$ ${totalPrices.cart}`}
                           </Typography>
                         </TableCell>
 
-                        <TableCell align="center"/>
+                        <TableCell />
                       </TableRow>
                     </TableBody>
                   </Table>
@@ -186,4 +207,15 @@ class ShoppingCart extends Component {
   }
 }
 
-export default ShoppingCart;
+const mapDispatchToProps = dispatch =>
+  bindActionCreators(
+    {
+      setCountProductsOnCart
+    },
+    dispatch
+  );
+
+export default connect(
+  null,
+  mapDispatchToProps
+)(ShoppingCart);

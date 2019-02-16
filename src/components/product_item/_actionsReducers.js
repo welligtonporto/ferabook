@@ -1,12 +1,19 @@
-export function addProductOnCart(quantity) {
+export function setCountProductsOnCart(quantity) {
   return {
-    type: "ADD_PRODUCT_ON_CART",
+    type: "SET_COUNT_PRODUCTS_ON_CART",
     quantity
   };
 }
 
-export function clearCart() {
+export function incrementCountProductsOnCart(quantity) {
   return {
-    type: "CLEAR_CART"
+    type: "INCREMENT_COUNT_PRODUCTS_ON_CART",
+    quantity
+  };
+}
+
+export function clearCountCart() {
+  return {
+    type: "CLEAR_COUNT_CART"
   };
 }

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 
-import { addProductOnCart } from "./_actionsReducers";
+import { incrementCountProductsOnCart } from "./_actionsReducers";
 
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
@@ -19,16 +19,16 @@ class ProductItem extends Component {
 
     if (productAlreadyAdded) {
       let indexProduct = oldProductsOnCart.indexOf(productAlreadyAdded);
-      oldProductsOnCart[indexProduct].total++;
+      oldProductsOnCart[indexProduct].qty++;
     } else {
       oldProductsOnCart.push({
         ...productData,
-        total: 1
+        qty: 1
       });
     }
 
     localStorage.setItem('productsOnCart', JSON.stringify(oldProductsOnCart));
-    this.props.addProductOnCart(1);
+    this.props.incrementCountProductsOnCart(1);
   };
 
   render() {
@@ -44,7 +44,7 @@ class ProductItem extends Component {
             {productData.volumeInfo.title}
           </Typography>
           <Typography component="p">
-            {productData.saleInfo ? productData.saleInfo.listPrice.amount : defaultPrice}
+            {`$ ${productData.saleInfo ? productData.saleInfo.listPrice.amount : defaultPrice}`}
           </Typography>
         </CardContent>
 
@@ -61,7 +61,7 @@ class ProductItem extends Component {
 const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
-      addProductOnCart
+      incrementCountProductsOnCart
     },
     dispatch
   );

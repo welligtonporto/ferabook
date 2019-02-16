@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 
-import { addProductOnCart } from "./../product_item/_actionsReducers";
+import { setCountProductsOnCart } from "./../product_item/_actionsReducers";
 
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -25,15 +25,16 @@ class DefaultLayoutHeader extends Component {
   };
 
   componentDidMount() {
-    this.setProductsOnCart();
+    this.setCountProductsOnCart();
   }
 
-  setProductsOnCart = () => {
+  setCountProductsOnCart = () => {
     let productsOnCart = JSON.parse(localStorage.getItem('productsOnCart')) || [];
 
     if (Object.keys(productsOnCart).length){
-      let quantityOnCart = Object.keys(productsOnCart).reduce((sum, key) => sum + productsOnCart[key].total, 0);
-      this.props.addProductOnCart(quantityOnCart);
+      let quantityOnCart = Object.keys(productsOnCart).reduce((sum, key) => sum + productsOnCart[key].qty, 0);
+
+      this.props.setCountProductsOnCart(quantityOnCart);
     }
   }
 
@@ -100,7 +101,7 @@ class DefaultLayoutHeader extends Component {
           )}
 
           <IconButton color="inherit" onClick={() => this.props.history.push('/cart')}>
-            <Badge badgeContent={this.props.productsOnCart} color="secondary">
+            <Badge badgeContent={this.props.countProductsOnCart} color="secondary">
               <ShoppingCartIcon />
             </Badge>
           </IconButton>
@@ -111,13 +112,13 @@ class DefaultLayoutHeader extends Component {
 }
 
 const mapStateToProps = state => ({
-  productsOnCart: state.productsOnCart
+  countProductsOnCart: state.countProductsOnCart
 });
 
 const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
-      addProductOnCart
+      setCountProductsOnCart
     },
     dispatch
   );

@@ -17,10 +17,8 @@ const DefaultLayout = ({component: Component, ...rest}) => {
         <div className="defaultLayout__content">
           <Component {...matchProps} />
         </div>
-        
-        {rest.checkinIsVisible && (
-          <Checkin />
-        )}
+
+        <Checkin open={rest.checkinIsVisible} />
       </div>  
     )} />
   )

@@ -42,7 +42,7 @@ class UserOrders extends Component {
   listenerUserOrders = () => {
     firebase.database().ref(`user_orders/${this.props.user.uid}`).on('value', (snapshot) => {
       this.setState({
-        userOrders: snapshot.val()
+        userOrders: snapshot.val() ? snapshot.val() : {}
       });
     });
   };

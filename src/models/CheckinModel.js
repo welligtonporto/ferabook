@@ -1,15 +1,24 @@
-import firebase from './../firebase.js';
+import firebase from './../firebaseClient.js';
+import firebaseAdmin from './../firebaseAdmin.js';
 
-const signUp = (email, password) => {
+const userSignup = (email, password) => {
   return firebase.auth().createUserWithEmailAndPassword(email, password);
 };
 
-const login = (email, password) => {
+const userLogin = (email, password) => {
   return firebase.auth().signInWithEmailAndPassword(email, password);
 };
 
-const logout = () => {
+const userLogout = () => {
   return firebase.auth().signOut();
 };
 
-export { signUp, login, logout };
+const adminLogin = (email, password) => {
+  return firebaseAdmin.auth().signInWithEmailAndPassword(email, password);
+};
+
+const adminLogout = () => {
+  return firebaseAdmin.auth().signOut();
+};
+
+export { userSignup, userLogin, userLogout, adminLogin, adminLogout };

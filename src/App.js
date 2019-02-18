@@ -26,6 +26,7 @@ class App extends Component {
             <DefaultLayout path="/cart" component={ShoppingCart}/>
             <DefaultLayout path="/order-completed" component={OrderCompleted}/>
             <DefaultLayout path="/my-orders" component={UserOrders}/>
+            
             <AdminLayout exact path="/admin" component={AdminLogin}/>
             <AdminLayout path="/admin/orders" component={AdminOrders}/>
           </React.Fragment>

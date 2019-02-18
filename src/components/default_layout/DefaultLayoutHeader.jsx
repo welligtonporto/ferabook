@@ -17,17 +17,17 @@ import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import PersonIcon from '@material-ui/icons/Person';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 
-import firebase from './../../firebase.js';
-import { logout } from './../../models/CheckinModel';
+import firebase from './../../firebaseClient.js';
+import { userLogout } from './../../models/CheckinModel';
 
 import './DefaultLayoutHeader.scss';
 
 class DefaultLayoutHeader extends Component {
   state = {
-    anchorEl: null,
+    anchorAccountMenu: null,
   };
 
-  componentDidMount() {
+  componentDidMount = () => {
     this.setCountProductsOnCart();
     this.authListener();
   };
@@ -52,21 +52,21 @@ class DefaultLayoutHeader extends Component {
     }
   };
 
-  handleMenu = event => {
-    this.setState({ anchorEl: event.currentTarget });
+  handleOpenAccountMenu = event => {
+    this.setState({ anchorAccountMenu: event.currentTarget });
   };
 
-  handleClose = () => {
-    this.setState({ anchorEl: null });
+  handleCloseAccountMenu = () => {
+    this.setState({ anchorAccountMenu: null });
   };
 
   getLogout = () => {
-    logout().then(() => this.props.clearUser());
+    userLogout().then(() => this.props.clearUser());
   };
 
   render() {
-    const { anchorEl } = this.state;
-    const open = Boolean(anchorEl);
+    const { anchorAccountMenu } = this.state;
+    const openAccountMenu = Boolean(anchorAccountMenu);
 
     return (
       <AppBar position="fixed">
@@ -79,7 +79,7 @@ class DefaultLayoutHeader extends Component {
 
           {this.props.user && (
             <React.Fragment>
-              <Button color="inherit" aria-owns={open ? 'menu-appbar' : undefined} aria-haspopup="true" onClick={this.handleMenu}>
+              <Button color="inherit" aria-owns={openAccountMenu ? 'menu-appbar' : undefined} aria-haspopup="true" onClick={this.handleOpenAccountMenu.bind(this)}>
                 <PersonIcon className="personIcon" />
 
                 <Typography color="inherit">
@@ -91,7 +91,7 @@ class DefaultLayoutHeader extends Component {
 
               <Menu
                 id="menu-appbar"
-                anchorEl={anchorEl}
+                anchorEl={anchorAccountMenu}
                 anchorOrigin={{
                   vertical: 'top',
                   horizontal: 'right',
@@ -100,8 +100,8 @@ class DefaultLayoutHeader extends Component {
                   vertical: 'top',
                   horizontal: 'right',
                 }}
-                open={open}
-                onClose={this.handleClose}
+                open={openAccountMenu}
+                onClose={this.handleCloseAccountMenu}
               >
                 <MenuItem onClick={() => this.props.history.push('my-orders')}>My orders</MenuItem>
                 <MenuItem onClick={this.getLogout.bind(this)}>Logout</MenuItem>

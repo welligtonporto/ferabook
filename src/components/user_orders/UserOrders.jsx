@@ -16,9 +16,7 @@ import CheckIcon from '@material-ui/icons/Check';
 
 import Load from './../load/Load'
 
-import { getUserOrders } from './../../models/OrderModel.js';
-
-import firebase from './../../firebase.js';
+import firebase from './../../firebaseClient.js';
 
 import './UserOrders.scss';
 
@@ -29,13 +27,13 @@ class UserOrders extends Component {
     userOrders: {}
   };
 
-  componentDidMount() {
+  componentDidMount = () => {
     if (this.props.user){
       this.listenerUserOrders();
     };
   };
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate = (prevProps) => {
     if ((prevProps.user !== this.props.user) && this.props.user){
       this.listenerUserOrders();
     }
@@ -47,25 +45,6 @@ class UserOrders extends Component {
         userOrders: snapshot.val()
       });
     });
-  };
-
-  getUserOrders = async () => {
-    this.setState({
-      isLoading: true
-    });
-
-    try {
-      let response = await getUserOrders(this.props.user.uid);
-
-      this.setState({
-        isLoading: false,
-        userOrders: response ? response : {}
-      });
-    } catch {
-      this.setState({
-        isLoading: false
-      });
-    }
   };
 
   render() {

@@ -7,15 +7,13 @@ import Load from './../load/Load'
 
 import { getMainProducts } from './../../models/ProductModel.js';
 
-import './Home.scss';
-
 class Home extends Component {
   state = {
     isLoading: true,
     products: {}
   };
 
-  componentDidMount() {
+  componentDidMount = () => {
     this.getProducts();
   };
 

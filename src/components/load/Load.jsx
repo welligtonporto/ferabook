@@ -4,7 +4,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 
 import './Load.scss';
 
-const Load = ({ data: productData }) => {
+const Load = () => {
   return <div className="load"><CircularProgress /></div>;
 };
 

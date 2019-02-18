@@ -36,7 +36,7 @@ class ShoppingCart extends Component {
     }
   };
 
-  componentDidMount() {
+  componentDidMount = () => {
     this.getProductsOnCart();
   };
 

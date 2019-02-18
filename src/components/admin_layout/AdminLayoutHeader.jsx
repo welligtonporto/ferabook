@@ -11,10 +11,10 @@ import Button from '@material-ui/core/Button';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 
 import firebaseAdmin from './../../firebaseAdmin.js';
-import { logout } from './../../models/CheckinModelAdmin';
+import { adminLogout } from './../../models/CheckinModel';
 
 class AdminLayoutHeader extends Component {
-  componentDidMount() {
+  componentDidMount = () => {
     this.authListener();
   };
 
@@ -29,7 +29,7 @@ class AdminLayoutHeader extends Component {
   };
 
   onLogout = () => {
-    logout().then(() => {
+    adminLogout().then(() => {
       this.props.clearUserAdmin();
       this.props.history.push('/admin');
     });
@@ -40,7 +40,7 @@ class AdminLayoutHeader extends Component {
       <AppBar position="fixed" color="secondary">
         <Toolbar>
           <Typography variant="h6" color="inherit" noWrap className="logo">
-            <span onClick={() => this.props.history.push('/admin/orders')}>
+            <span>
               #ferabook
             </span>
           </Typography>

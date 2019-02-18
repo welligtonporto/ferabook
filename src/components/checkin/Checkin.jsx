@@ -13,7 +13,7 @@ import Button from '@material-ui/core/Button';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import SnackbarContent from '@material-ui/core/SnackbarContent';
 
-import { signUp, login } from './../../models/CheckinModel';
+import { userSignup, userLogin } from './../../models/CheckinModel';
 
 import './Checkin.scss';
 
@@ -39,7 +39,7 @@ class Checkin extends Component {
       messageAlertLoginFailed: ''
     });
     
-    login(this.state.loginEmail, this.state.loginPassword)
+    userLogin(this.state.loginEmail, this.state.loginPassword)
       .then((response) => {
         this.setState({
           isLogging: false
@@ -62,7 +62,7 @@ class Checkin extends Component {
       messageAlertSignUpFailed: ''
     });
 
-    signUp(this.state.signupEmail, this.state.signupPassword)
+    userSignup(this.state.signupEmail, this.state.signupPassword)
       .then(() => {
         this.setState({
           isSigning: false

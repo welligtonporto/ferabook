@@ -18,7 +18,7 @@ import Load from './../load/Load'
 
 import { updateOrder } from './../../models/OrderModel.js';
 
-import firebase from './../../firebase.js';
+import firebase from './../../firebaseClient.js';
 
 import './AdminOrders.scss';
 
@@ -28,7 +28,7 @@ class AdminOrders extends Component {
     orders: {}
   };
 
-  componentDidMount(){
+  componentDidMount = () => {
     this.listenerOrders();
   };
 
@@ -56,7 +56,7 @@ class AdminOrders extends Component {
 
     return (
       <div className="adminOrders">
-        <Typography variant="h4" color="primary" gutterBottom>
+        <Typography variant="h4" color="secondary" gutterBottom>
           Orders
         </Typography>
 

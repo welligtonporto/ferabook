@@ -11,9 +11,7 @@ import TextField from '@material-ui/core/TextField';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Grid from '@material-ui/core/Grid';
 
-import { login } from './../../models/CheckinModelAdmin';
-
-// import './AdminLogin.scss';
+import { adminLogin } from './../../models/CheckinModel';
 
 class AdminLogin extends Component {
   state = {
@@ -33,7 +31,7 @@ class AdminLogin extends Component {
       messageAlertLoginFailed: ''
     });
 
-    login(this.state.loginEmail, this.state.loginPassword)
+    adminLogin(this.state.loginEmail, this.state.loginPassword)
       .then((response) => {
         this.setState({
           isLogging: false

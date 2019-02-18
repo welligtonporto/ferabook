@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 
-import { hideCheckin } from "./../checkin/_actionsReducers";
+import { hideCheckin, setUser } from "./../checkin/_actionsReducers";
 
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -13,15 +13,17 @@ import Button from '@material-ui/core/Button';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import SnackbarContent from '@material-ui/core/SnackbarContent';
 
-import { signUp } from './../../models/CheckinModel';
+import { signUp, login } from './../../models/CheckinModel';
 
 import './Checkin.scss';
 
 class Checkin extends Component {
   state = {
+    isLogging: false,
     isSigning: false,
     loginEmail: '',
     loginPassword: '',
+    messageAlertLoginFailed: '',
     messageAlertSignUpFailed: '',
     signupEmail: '',
     signupPassword: ''
@@ -32,7 +34,26 @@ class Checkin extends Component {
   };
 
   getLogin = () => {
-    console.log('getLogin');
+    this.setState({
+      isLogging: true,
+      messageAlertLoginFailed: ''
+    });
+
+    login(this.state.loginEmail, this.state.loginPassword)
+      .then((response) => {
+        this.setState({
+          isLogging: false
+        });
+
+        this.props.setUser(response.user);
+        this.props.hideCheckin();
+      })
+      .catch(error => {
+        this.setState({
+          isLogging: false,
+          messageAlertLoginFailed: error.message
+        });
+      });
   };
 
   getSignUp = () => {
@@ -58,11 +79,16 @@ class Checkin extends Component {
   };
 
   render() {
-    let { isSigning, messageAlertSignUpFailed } = this.state;
+    let {
+      isLogging,
+      isSigning,
+      messageAlertLoginFailed,
+      messageAlertSignUpFailed
+    } = this.state;
 
     return (
       <Dialog
-        open={this.props.open}
+        open={this.props.checkinIsVisible}
         onClose={this.props.hideCheckin.bind(this)}
         maxWidth="md"
         fullWidth={true}
@@ -74,6 +100,12 @@ class Checkin extends Component {
                 <Typography variant="h4" color="primary" gutterBottom>
                   Login
                 </Typography>
+
+                {messageAlertLoginFailed &&
+                  <SnackbarContent
+                    message={messageAlertLoginFailed}
+                  />
+                }
 
                 <TextField
                   margin="normal"
@@ -91,8 +123,10 @@ class Checkin extends Component {
                   onChange={this.handleChange('loginPassword')}
                 />
 
-                <Button variant="contained" size="medium" color="primary" onClick={this.getLogin.bind(this)} fullWidth>
+                <Button variant="contained" size="medium" color="primary" onClick={this.getLogin.bind(this)} fullWidth disabled={isLogging}>
                   Login
+
+                  {isLogging && <CircularProgress color="secondary" className="shoppingCart__gettingOrder" size={20} />}
                 </Button>
               </Grid>
 
@@ -137,16 +171,21 @@ class Checkin extends Component {
   }
 }
 
+const mapStateToProps = state => ({
+  checkinIsVisible: state.checkinIsVisible
+});
+
 const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
-      hideCheckin
+      hideCheckin,
+      setUser
     },
     dispatch
   );
 
 export default connect(
-  null,
+  mapStateToProps,
   mapDispatchToProps
 )(Checkin);
 

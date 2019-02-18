@@ -4,4 +4,12 @@ const signUp = (email, password) => {
   return firebase.auth().createUserWithEmailAndPassword(email, password);
 };
 
-export { signUp };
+const login = (email, password) => {
+  return firebase.auth().signInWithEmailAndPassword(email, password);
+};
+
+const logout = () => {
+  return firebase.auth().signOut();
+};
+
+export { signUp, login, logout };

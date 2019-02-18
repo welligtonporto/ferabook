@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 
-import { setCountProductsOnCart } from "./../product_item/_actionsReducers";
+import { setCountProductsOnCart, clearCountCart } from "./../product_item/_actionsReducers";
+import { showCheckin } from "./../checkin/_actionsReducers";
 
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
@@ -19,6 +20,8 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import KeyboardArrowLeftIcon from '@material-ui/icons/KeyboardArrowLeft';
 
 import Load from './../load/Load'
+
+import { setOrder } from './../../models/OrderModel.js';
 
 import './ShoppingCart.scss';
 
@@ -61,7 +64,7 @@ class ShoppingCart extends Component {
       (product.saleInfo ? product.saleInfo.listPrice.amount : defaultPrice) * product.qty).toFixed(2)
     );
 
-    let totalPricesCart = totalPricesByItem.reduce((sum, totalItem) => parseFloat(sum) + parseFloat(totalItem), 0);
+    let totalPricesCart = totalPricesByItem.reduce((sum, totalItem) => (parseFloat(sum) + parseFloat(totalItem)).toFixed(2), 0);
 
     return {
       items: totalPricesByItem,
@@ -69,20 +72,52 @@ class ShoppingCart extends Component {
     }
   };
 
-  getOrder = () => {
-    // TODO: Mudar isso para api
-    this.setState({
-      gettingOrder: true
-    });
-
-    setTimeout(() => {
+  setNewOrder = async () => {
+    if (this.props.user) {
       this.setState({
-        gettingOrder: false
+        gettingOrder: true
       });
 
-      this.props.history.push('/order-completed');
-    }, 2000);
-  }
+      let orderData = {
+        orderId: new Date().getTime(),
+        userId: this.props.user.uid,
+        date: this.formatDateToOrder(new Date()),
+        price: this.state.totalPrices.cart,
+        status: 'review'
+      };
+
+      try {
+        let response = await setOrder(orderData);
+
+        if (response){
+          this.setState({
+            gettingOrder: false
+          });
+
+          this.props.history.push('/order-completed');
+          localStorage.removeItem('productsOnCart');
+          this.props.clearCountCart();
+        }
+      } catch(error) {
+        this.setState({
+          gettingOrder: false
+        });
+      }
+    } else {
+      this.props.showCheckin();
+    }
+  };
+
+  formatDateToOrder = (date) => {
+    let month = date.getMonth() + 1;
+    let day = date.getDate();
+    let year = date.getFullYear();
+    let hours = date.getHours();
+    let minutes = date.getMinutes();
+    let seconds = date.getSeconds();
+    
+    return `${month}/${day}/${year} - ${hours}:${minutes}:${seconds}`
+  };
 
   removeProductFromCart = (indexProduct) => {
     let productsOnCart = JSON.parse(localStorage.getItem('productsOnCart')) || [];
@@ -193,7 +228,7 @@ class ShoppingCart extends Component {
                     Continue shopping
                   </Button>
 
-                  <Button variant="contained" size="medium" color="secondary" onClick={this.getOrder} disabled={gettingOrder}>
+                  <Button variant="contained" size="medium" color="secondary" onClick={this.setNewOrder} disabled={gettingOrder}>
                     Place order
                     {gettingOrder && <CircularProgress color="secondary" className="shoppingCart__gettingOrder" size={20} />}
                   </Button>
@@ -207,15 +242,21 @@ class ShoppingCart extends Component {
   }
 }
 
+const mapStateToProps = state => ({
+  user: state.user
+});
+
 const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
-      setCountProductsOnCart
+      setCountProductsOnCart,
+      clearCountCart,
+      showCheckin,
     },
     dispatch
   );
 
 export default connect(
-  null,
+  mapStateToProps,
   mapDispatchToProps
 )(ShoppingCart);

@@ -6,21 +6,11 @@ import Button from '@material-ui/core/Button';
 import './OrderCompleted.scss';
 
 class OrderCompleted extends Component {
-  state = {
-    orderNumber: "#001"
-  }
-
   render() {
-    let { orderNumber } = this.state;
-
     return (
       <div>
         <Typography variant="h4" color="primary" gutterBottom>
           Order Completed!
-        </Typography>
-
-        <Typography component="p" gutterBottom>
-          The order <strong>{orderNumber}</strong> was completed.
         </Typography>
 
         <Typography component="p" gutterBottom>

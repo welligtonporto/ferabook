@@ -11,6 +11,7 @@ import OrderCompleted from './components/order_completed/OrderCompleted';
 import UserOrders from './components/user_orders/UserOrders';
 
 import AdminOrders from './components/admin_orders/AdminOrders';
+import AdminLogin from './components/admin_login/AdminLogin';
 
 class App extends Component {
   render() {
@@ -25,7 +26,7 @@ class App extends Component {
             <DefaultLayout path="/cart" component={ShoppingCart}/>
             <DefaultLayout path="/order-completed" component={OrderCompleted}/>
             <DefaultLayout path="/my-orders" component={UserOrders}/>
-            {/* <AdminLayout path="/admin" component={AdminLogin}/> */}
+            <AdminLayout exact path="/admin" component={AdminLogin}/>
             <AdminLayout path="/admin/orders" component={AdminOrders}/>
           </React.Fragment>
         </Router>

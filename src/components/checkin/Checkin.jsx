@@ -33,12 +33,12 @@ class Checkin extends Component {
     this.setState({ [name]: event.target.value });
   };
 
-  getLogin = () => {
+  onLogin = () => {
     this.setState({
       isLogging: true,
       messageAlertLoginFailed: ''
     });
-
+    
     login(this.state.loginEmail, this.state.loginPassword)
       .then((response) => {
         this.setState({
@@ -56,7 +56,7 @@ class Checkin extends Component {
       });
   };
 
-  getSignUp = () => {
+  onSignup = () => {
     this.setState({
       isSigning: true,
       messageAlertSignUpFailed: ''
@@ -123,7 +123,7 @@ class Checkin extends Component {
                   onChange={this.handleChange('loginPassword')}
                 />
 
-                <Button variant="contained" size="medium" color="primary" onClick={this.getLogin.bind(this)} fullWidth disabled={isLogging}>
+                <Button variant="contained" size="medium" color="primary" onClick={this.onLogin.bind(this)} fullWidth disabled={isLogging}>
                   Login
 
                   {isLogging && <CircularProgress color="secondary" className="shoppingCart__gettingOrder" size={20} />}
@@ -157,7 +157,7 @@ class Checkin extends Component {
                   onChange={this.handleChange('signupPassword')}
                 />
 
-                <Button variant="contained" size="medium" color="secondary" onClick={this.getSignUp.bind(this)} fullWidth disabled={isSigning}>
+                <Button variant="contained" size="medium" color="secondary" onClick={this.onSignup.bind(this)} fullWidth disabled={isSigning}>
                   Signup
 
                   {isSigning && <CircularProgress color="secondary" className="shoppingCart__gettingOrder" size={20} />}

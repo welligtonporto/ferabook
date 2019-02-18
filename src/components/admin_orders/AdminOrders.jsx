@@ -16,7 +16,7 @@ import CheckIcon from '@material-ui/icons/Check';
 
 import Load from './../load/Load'
 
-import { getOrders, updateOrder } from './../../models/OrderModel.js';
+import { updateOrder } from './../../models/OrderModel.js';
 
 import firebase from './../../firebase.js';
 
@@ -31,30 +31,6 @@ class AdminOrders extends Component {
   componentDidMount(){
     this.listenerOrders();
   };
-
-  componentDidUpdate(prevProps){
-    // if ((prevProps.user !== this.props.user) && this.props.user){
-      // this.getOrders();
-    // }
-  };
-
-  // getOrders = async () => {
-  //   this.setState({
-  //     isLoading: true
-  //   });
-
-  //   try {
-  //     let response = await getOrders();
-
-      
-  //   } catch {
-  //     console.log('catch');
-
-  //     this.setState({
-  //       isLoading: false
-  //     });
-  //   }
-  // };
 
   listenerOrders = () => {
     firebase.database().ref('orders').on('value', (snapshot) => {
@@ -71,8 +47,7 @@ class AdminOrders extends Component {
   };
 
   render() {
-    // let hasPermission = this.props.user ? true : false;
-    let hasPermission = true;
+    let hasPermission = this.props.userAdmin ? true : false;
     let { orders, isLoading } = this.state;
 
     if (!hasPermission) return (
@@ -146,4 +121,11 @@ class AdminOrders extends Component {
   }
 };
 
-export default AdminOrders;
+const mapStateToProps = state => ({
+  userAdmin: state.userAdmin
+});
+
+export default connect(
+  mapStateToProps,
+  null
+)(AdminOrders);
